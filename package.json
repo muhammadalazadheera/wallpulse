@@ -1,0 +1,21 @@
+{
+  "name": "wall-mania",
+  "version": "1.0.0",
+  "description": "A simple but powerful electron js cros platform application to change wallpaper windows, mac, and linux.",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron index.cjs",
+    "serve": "node server.js"
+  },
+  "author": "Al Azad Heera",
+  "license": "ISC",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "electron": "^25.4.0",
+    "wallpaper": "^7.0.0"
+  },
+  "type": "module"
+}

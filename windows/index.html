@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Wallpulse</title>
+    <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
+</head>
+
+<body>
+
+    <section id="main">
+        <div class="container-fluid">
+            <div class="topbar">
+                <h1>WALLPULSE</h1>
+            </div>
+            <div class="row" x-data="{i : null}">
+                <template x-for="i in 9">
+                    <div class="col-md-4">
+                        <div class="single-img">
+                            <img onclick="convertToBase64(event)"
+                                :src="'https://source.unsplash.com/random/1600x900?sig='+i" alt="default.png"
+                                loading="lazy" crossorigin="anonymous">
+                        </div>
+                    </div>
+                </template>
+            </div>
+            <div id="images" class="row">
+
+            </div>
+            <div class="row">
+                <div class="col-md-12">
+                    <button id="addMore" class="button">Load More</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
+    <script>
+        let rowCount = 0;
+        let width = window.screen.width;
+        let height = window.screen.height;
+        let size = width + 'x' + height;
+        function addMore() {
+            rowCount += 1;
+            for (let i = 1; i <= 9; i++) {
+                let targetDiv = document.getElementById('images');
+                targetDiv.innerHTML += `<div class="col-md-4">
+        <div class="single-img">
+          <img onclick="convertToBase64(event)" src="https://source.unsplash.com/random/${size}?sig=${(9 * rowCount) + i}" class="image" crossorigin="anonymous">
+        </div>
+      </div>`
+            }
+        }
+        let addMoreButton = document.getElementById('addMore');
+        addMoreButton.addEventListener('click', function () {
+            addMore();
+        })
+    </script>
+    <script>
+        let imgData = '';
+        function convertToBase64(event) {
+            let img = event.target;
+            let canvas = document.createElement("canvas");
+            canvas.width = window.screen.width; // Corrected
+            canvas.height = window.screen.height; // Corrected
+            let context = canvas.getContext("2d");
+            context.drawImage(img, 0, 0);
+            let dataURL = canvas.toDataURL("image/jpeg");
+
+            let image = encodeURIComponent(dataURL.split(';base64,').pop());
+            const url = 'http://127.0.0.1:3000/set-wallpaper/' + image;
+
+            fetch(url)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    // Handle the data returned from the API
+                    console.log(data);
+                })
+                .catch(error => {
+                    // Handle any errors that occurred during the fetch
+                    console.error('Fetch error:', error);
+                });
+        }
+    </script>
+</body>
+
+</html>
